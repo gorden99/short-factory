@@ -50,10 +50,10 @@
       "category": "public.app-category.productivity",
       "target": [
         {
-          "target": "dmg",
+          "target": "zip",
           "arch": [
-            "x64",
-            "arm64"
+            "arm64",
+            "x64"
           ]
         }
       ],
@@ -61,10 +61,6 @@
       "hardenedRuntime": false,
       "gatekeeperAssess": false,
       "artifactName": "短稿工场个人版-Mac-${arch}.${ext}"
-    },
-    "dmg": {
-      "title": "ShortFactory-Personal",
-      "icon": "build/icon.icns"
     }
   }
 }

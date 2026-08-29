@@ -95,7 +95,7 @@ jobs:
             fi
           done
           echo "=== 打包产物 ==="
-          ls -la ../downloads/*.dmg 2>/dev/null || ls -la ../downloads/
+          ls -la ../downloads/*.zip 2>/dev/null || ls -la ../downloads/
 
       - name: 打包 Mac 版 - 个人版
         env:
@@ -124,12 +124,12 @@ jobs:
             fi
           done
           echo "=== 打包产物 ==="
-          ls -la ../downloads/*.dmg 2>/dev/null || ls -la ../downloads/
+          ls -la ../downloads/*.zip 2>/dev/null || ls -la ../downloads/
 
       - name: 收集 Mac 安装包
         run: |
           mkdir -p mac-output
-          find downloads -name "*.dmg" -exec cp {} mac-output/ \;
+          find downloads -name "*.zip" -exec cp {} mac-output/ \;
           echo "=== 最终产物 ==="
           ls -lh mac-output/
 
@@ -137,5 +137,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: 短稿工厂-Mac安装包
-          path: mac-output/*.dmg
+          path: mac-output/*.zip
           retention-days: 30
