@@ -32,6 +32,19 @@ jobs:
             electron/package-lock.json
             electron-personal/package-lock.json
 
+      - name: 清理 DMG 环境（卸载残留卷+禁用索引）
+        run: |
+          # 禁用 Spotlight 对 DMG 的索引（避免 hdiutil detach 被占用）
+          defaults write com.apple.frameworks.diskimages skip-verify -bool true || true
+          defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true || true
+          # 卸载所有残留的 DMG 卷
+          for dev in $(hdiutil info 2>/dev/null | grep -E '/dev/disk[0-9]+' | awk '{print $1}' | sort -u); do
+            echo "卸载残留卷: $dev"
+            hdiutil detach "$dev" -force || true
+          done
+          echo "环境清理完成"
+          hdiutil info | head -5
+
       - name: 生成 Mac 图标 (.icns) - MCN版
         run: |
           cd electron/build
@@ -59,8 +72,28 @@ jobs:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
           CI: 'false'
         run: |
+          # 打包前清理残留卷
+          for dev in $(hdiutil info 2>/dev/null | grep -E '/dev/disk[0-9]+' | awk '{print $1}' | sort -u); do
+            hdiutil detach "$dev" -force || true
+          done
           cd electron
-          npm run dist:mac
+          # 重试最多 3 次（hdiutil detach 偶发失败）
+          for i in 1 2 3; do
+            echo "=== 第 $i 次尝试打包 ==="
+            if npm run dist:mac; then
+              echo "✅ 打包成功"
+              break
+            fi
+            echo "⚠️ 第 $i 次失败，清理后重试..."
+            for dev in $(hdiutil info 2>/dev/null | grep -E '/dev/disk[0-9]+' | awk '{print $1}' | sort -u); do
+              hdiutil detach "$dev" -force || true
+            done
+            sleep 3
+            if [ $i -eq 3 ]; then
+              echo "❌ 3次尝试均失败"
+              exit 1
+            fi
+          done
           echo "=== 打包产物 ==="
           ls -la ../downloads/*.dmg 2>/dev/null || ls -la ../downloads/
 
@@ -69,8 +102,27 @@ jobs:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
           CI: 'false'
         run: |
+          # 打包前清理残留卷
+          for dev in $(hdiutil info 2>/dev/null | grep -E '/dev/disk[0-9]+' | awk '{print $1}' | sort -u); do
+            hdiutil detach "$dev" -force || true
+          done
           cd electron-personal
-          npm run dist:mac
+          for i in 1 2 3; do
+            echo "=== 第 $i 次尝试打包 ==="
+            if npm run dist:mac; then
+              echo "✅ 打包成功"
+              break
+            fi
+            echo "⚠️ 第 $i 次失败，清理后重试..."
+            for dev in $(hdiutil info 2>/dev/null | grep -E '/dev/disk[0-9]+' | awk '{print $1}' | sort -u); do
+              hdiutil detach "$dev" -force || true
+            done
+            sleep 3
+            if [ $i -eq 3 ]; then
+              echo "❌ 3次尝试均失败"
+              exit 1
+            fi
+          done
           echo "=== 打包产物 ==="
           ls -la ../downloads/*.dmg 2>/dev/null || ls -la ../downloads/
 
