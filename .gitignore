@@ -1,0 +1,39 @@
+# 依赖
+node_modules/
+**/node_modules/
+
+# 打包产物（大文件，不提交）
+downloads/
+**/downloads/
+dist/
+**/dist/
+out/
+**/out/
+
+# 日志
+*.log
+npm-debug.log*
+
+# 系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 临时脚本（_开头的）
+_*.py
+_*.js
+
+# 备份文件
+*.bak
+*.bak_*
+*_原始版*
+
+# 环境变量
+.env
+.env.local

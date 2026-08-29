@@ -1,0 +1,89 @@
+name: 打包 Mac 桌面版
+
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'electron/**'
+      - 'electron-personal/**'
+      - '.github/workflows/build-mac.yml'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: '版本号（可选，默认 package.json 中的版本）'
+        required: false
+
+jobs:
+  build-mac:
+    name: 打包 Mac 版（MCN + 个人版）
+    runs-on: macos-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: |
+            electron/package-lock.json
+            electron-personal/package-lock.json
+
+      - name: 生成 Mac 图标 (.icns) - MCN版
+        run: |
+          cd electron/build
+          iconutil -c icns icon.iconset
+          ls -la icon.icns
+
+      - name: 生成 Mac 图标 (.icns) - 个人版
+        run: |
+          cd electron-personal/build
+          iconutil -c icns icon.iconset
+          ls -la icon.icns
+
+      - name: 安装依赖 - MCN版
+        run: |
+          cd electron
+          npm install
+
+      - name: 安装依赖 - 个人版
+        run: |
+          cd electron-personal
+          npm install
+
+      - name: 打包 Mac 版 - MCN版
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+          CI: 'false'
+        run: |
+          cd electron
+          npm run dist:mac
+          echo "=== 打包产物 ==="
+          ls -la ../downloads/*.dmg 2>/dev/null || ls -la ../downloads/
+
+      - name: 打包 Mac 版 - 个人版
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+          CI: 'false'
+        run: |
+          cd electron-personal
+          npm run dist:mac
+          echo "=== 打包产物 ==="
+          ls -la ../downloads/*.dmg 2>/dev/null || ls -la ../downloads/
+
+      - name: 收集 Mac 安装包
+        run: |
+          mkdir -p mac-output
+          find downloads -name "*.dmg" -exec cp {} mac-output/ \;
+          echo "=== 最终产物 ==="
+          ls -lh mac-output/
+
+      - name: 上传 Mac 安装包
+        uses: actions/upload-artifact@v4
+        with:
+          name: 短稿工厂-Mac安装包
+          path: mac-output/*.dmg
+          retention-days: 30

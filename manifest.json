@@ -1,0 +1,32 @@
+{
+  "name": "短稿工厂 - 多平台短视频文案生成工具",
+  "short_name": "短稿工厂",
+  "description": "专业的多平台短视频文案批量生成工具，支持抖音、快手、视频号、小红书、B站等平台，个人版与MCN团队版可选。",
+  "start_url": "./short-factory.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0f2540",
+  "theme_color": "#0f2540",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "pwa-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "pwa-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": [
+    "productivity",
+    "utilities",
+    "business"
+  ],
+  "screenshots": []
+}

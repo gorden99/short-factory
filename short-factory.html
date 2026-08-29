@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0f2540">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="短稿工厂">
+  <link rel="apple-touch-icon" href="pwa-icon-192.png">
+<title>短稿工场 · AI 短视频文案批量生产工具 | 南宁和奥电子有限公司</title>
+<meta name="description" content="短稿工场：AI 短视频文案批量生产工具，一键生成抖音、快手、视频号、小红书、B站等多平台口播脚本、标题与标签，支持二次改写与 MCN 团队协作，设个人版与 MCN 版。">
+<style>
+:root{--primary:#0f4c81;--primary-2:#1b6ca8;--accent:#2a9d8f;--dark:#0f2540;--bg:#f5f8fc;--text:#1f2937;--muted:#64748b}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:"Microsoft YaHei","PingFang SC",-apple-system,sans-serif;color:var(--text);background:var(--bg);line-height:1.7}
+a{text-decoration:none;color:inherit}
+.container{max-width:1140px;margin:0 auto;padding:0 20px}
+/* 导航 */
+.nav{position:sticky;top:0;z-index:50;background:rgba(15,37,64,.92);backdrop-filter:blur(8px)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px}
+.nav .logo{display:flex;align-items:center;gap:10px;color:#fff;font-size:19px;font-weight:700}
+.nav .logo .dot{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--primary-2));display:flex;align-items:center;justify-content:center;font-size:17px}
+.logo-text{font-size:22px;font-weight:900;letter-spacing:2px;background:linear-gradient(180deg,#fff8e0 0%,#ffe28a 30%,#f0b429 55%,#c8860f 78%,#ffdf8a 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5));line-height:1}
+.nav-links{display:flex;gap:26px;color:#cbd5e1;font-size:14px}
+.nav-links a:hover{color:#fff}
+.nav-btn{background:var(--accent);color:#fff;padding:7px 16px;border-radius:20px;font-size:13px}
+.nav-btn:hover{background:#21867a}
+/* Hero */
+.hero{background:linear-gradient(135deg,#0f2540 0%,#123e6b 45%,#177a74 100%);color:#fff;padding:84px 0 90px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-120px;top:-120px;width:420px;height:420px;border-radius:50%;background:rgba(42,157,143,.18);filter:blur(10px)}
+.hero .container{position:relative;z-index:2;text-align:center}
+.hero .tag{display:inline-block;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);padding:4px 14px;border-radius:16px;font-size:12px;letter-spacing:1px;margin-bottom:22px}
+.hero h1{font-size:44px;font-weight:800;letter-spacing:1px;margin-bottom:16px}
+.hero h1 .grad{background:linear-gradient(90deg,#7fd8cd,#5fb4ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p.sub{font-size:17px;color:#d7e6f5;max-width:640px;margin:0 auto 30px}
+.gold-title{font-size:78px;font-weight:900;letter-spacing:8px;line-height:1.15;background:linear-gradient(180deg,#fff8e0 0%,#ffe28a 28%,#f0b429 52%,#c8860f 74%,#ffdf8a 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 8px 20px rgba(0,0,0,.45));margin:8px 0 16px}
+.hero-logo{max-width:440px;width:80%;height:auto;margin:6px auto 20px;display:block;filter:drop-shadow(0 10px 24px rgba(0,0,0,.35))}
+.hero .btns{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:10px;font-size:16px;font-weight:600;transition:.25s}
+.btn-download{background:#fff;color:var(--primary)}
+.btn-download:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(15,76,129,.28)}
+.btn-web{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.35)}
+.btn-web:hover{background:rgba(255,255,255,.2)}
+.hero .meta{margin-top:34px;font-size:13px;color:#9fc0de;display:flex;gap:22px;flex-wrap:wrap;justify-content:center}
+.hero .meta span{display:flex;align-items:center;gap:6px}
+/* 区块 */
+section{padding:70px 0}
+.section-head{text-align:center;margin-bottom:44px}
+.section-head h2{font-size:30px;color:var(--dark);margin-bottom:10px}
+.section-head p{color:var(--muted);font-size:15px}
+/* 应用简介 */
+.intro-card{background:#fff;border-radius:16px;box-shadow:0 6px 30px rgba(15,76,129,.08);padding:38px 40px;border-left:5px solid var(--accent)}
+.intro-card .big{font-size:19px;color:#111827;line-height:1.9}
+.intro-card .hint{margin-top:14px;font-size:13px;color:var(--muted)}
+/* 功能 */
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.feature{background:#fff;border-radius:14px;padding:26px 24px;box-shadow:0 4px 20px rgba(15,76,129,.06);transition:.25s;border-top:3px solid var(--primary-2)}
+.feature:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(15,76,129,.12)}
+.feature .icon{font-size:30px;margin-bottom:12px}
+.feature h3{font-size:17px;margin-bottom:8px;color:var(--dark)}
+.feature p{font-size:13.5px;color:var(--muted)}
+/* 版本 */
+.versions{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.version{background:#fff;border-radius:16px;padding:32px 30px;box-shadow:0 6px 30px rgba(15,76,129,.08);border-top:5px solid var(--primary)}
+.version.mcn{border-top-color:var(--accent)}
+.version h3{font-size:21px;color:var(--dark);margin-bottom:6px}
+.version .tagline{color:var(--muted);font-size:14px;margin-bottom:18px}
+.version ul{list-style:none}
+.version li{font-size:14px;padding:7px 0;border-bottom:1px dashed #eef2f7;display:flex;gap:8px}
+.version li:last-child{border-bottom:none}
+.version li::before{content:"✓";color:var(--accent);font-weight:700}
+/* 下载 */
+.download{background:linear-gradient(135deg,#0f2540,#123e6b);color:#fff}
+.download .section-head h2{color:#fff}
+.download .section-head p{color:#9fc0de}
+.dl-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:22px}
+.dl-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:30px 26px;text-align:center;transition:.25s}
+.dl-card:hover{background:rgba(255,255,255,.12);transform:translateY(-4px)}
+.dl-card .ico{font-size:38px;margin-bottom:12px}
+.dl-card h3{font-size:18px;margin-bottom:6px}
+.dl-card p{font-size:13px;color:#bcd4ea;margin-bottom:20px;min-height:44px}
+.dl-btn{display:inline-block;background:#fff;color:var(--primary);padding:10px 26px;border-radius:24px;font-weight:700;font-size:14px}
+.dl-btn.alt{background:var(--accent);color:#fff}
+.dl-btn:hover{opacity:.9}
+.dl-note{text-align:center;margin-top:26px;font-size:12.5px;color:#8fb0d2}
+/* 公司 */
+.company{background:#fff}
+.company-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:start}
+.company h3{font-size:20px;color:var(--dark);margin-bottom:14px}
+.company p{font-size:14.5px;color:#374151;margin-bottom:12px}
+.company .info{border:1px solid #e5ecf3;border-radius:12px;padding:18px 22px;font-size:13.5px;color:#374151;background:#fafcff}
+.company .info div{padding:6px 0;border-bottom:1px dashed #e8eef5}
+.company .info div:last-child{border-bottom:none}
+/* 页脚 */
+footer{background:var(--dark);color:#8fa7c2;padding:36px 0;font-size:13px}
+.footer-inner{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;align-items:center}
+.footer-inner a{color:#cbd5e1}
+@media(max-width:860px){
+ .hero h1{font-size:32px}
+ .features,.versions,.dl-cards,.company-grid{grid-template-columns:1fr}
+ .nav-links{display:none}
+}
+
+/* PWA 添加到桌面引导 */
+.pwa-tip{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;align-items:center;justify-content:center;padding:20px}
+.pwa-tip.show{display:flex}
+.pwa-box{background:#fff;border-radius:16px;max-width:380px;width:100%;padding:28px;text-align:center;color:#1a2a3a}
+.pwa-box h4{margin:0 0 12px;font-size:18px}
+.pwa-box p{margin:0 0 16px;font-size:14px;line-height:1.7;color:#4a5a6a}
+.pwa-box .steps{text-align:left;background:#f0f5fa;border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:13px;line-height:2}
+.pwa-box .close{background:#0f2540;color:#fff;border:none;padding:10px 28px;border-radius:8px;font-size:14px;cursor:pointer}
+.dl-btn.pwa{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
+.dl-btn.pwa:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(16,185,129,.3)}
+.dl-btn.coming{background:#94a3b8;color:#fff;cursor:not-allowed;pointer-events:none}
+</style>
+</head>
+<body>
+
+<!-- 导航 -->
+<nav class="nav">
+  <div class="container nav-inner">
+    <div class="logo"><span class="logo-text">短稿工厂</span></div>
+    <div class="nav-links">
+      <a href="index.html">🏠 返回官网</a>
+      <a href="#intro">应用简介</a>
+      <a href="#features">功能</a>
+      <a href="#versions">版本</a>
+      <a href="#download">下载</a>
+      <a href="#company">公司</a>
+      <a class="nav-btn" href="#download">立即下载</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<header class="hero">
+  <div class="container">
+    <span class="tag">AI 驱动 · 多平台 · 批量生产</span>
+    <h1 class="gold-title">短稿工厂</h1>
+    <p class="sub">一款 AI 短视频文案批量生产工具。输入素材，一键生成抖音、快手、视频号、小红书、B站等多平台口播脚本、标题与标签，支持二次改写与 MCN 团队协作，让内容创作高效又简单。</p>
+    <div class="btns">
+      <a class="btn btn-download" href="downloads/短稿工场个人版安装包.exe">⬇ 下载个人版</a>
+      <a class="btn btn-download" href="downloads/短稿工场MCN版安装包.exe">⬇ 下载 MCN 版</a>
+      <a class="btn btn-web" href="web/" target="_blank">🌐 网页版在线使用</a>
+    </div>
+    <div class="meta">
+      <span>✅ 多平台适配</span><span>👥 个人版 / MCN 版</span><span>🔐 手机号验证登录</span><span>💳 支付宝 / 微信支付</span>
+    </div>
+  </div>
+</header>
+
+<!-- 应用简介 -->
+<section id="intro">
+  <div class="container">
+    <div class="section-head">
+      <h2>应用简介</h2>
+      <p>关于短稿工场</p>
+    </div>
+    <div class="intro-card">
+      <p class="big">短稿工场是一款 AI 短视频文案批量生产工具，支持一键生成抖音、快手、视频号、小红书、B站等多平台口播脚本、标题与标签，可二次改写，提供个人版与 MCN 团队版，助力高效内容创作。</p>
+      
+    </div>
+  </div>
+</section>
+
+<!-- 功能 -->
+<section id="features" style="background:#fff">
+  <div class="container">
+    <div class="section-head"><h2>核心功能</h2><p>从一段素材到一条成品视频文案，只需几秒</p></div>
+    <div class="features">
+      <div class="feature"><div class="icon">🎯</div><h3>多平台差异化生成</h3><p>针对抖音、快手、视频号、小红书、B站平台语态风格智能定制，绝不雷同。</p></div>
+      <div class="feature"><div class="icon">📦</div><h3>脚本批量生产</h3><p>一次输入，多平台、多版本、多标题、多标签同时产出，满足批量运营。</p></div>
+      <div class="feature"><div class="icon">✏️</div><h3>指令化二次改写</h3><p>"改得更带货""缩短一半""加个梗"……一句话让脚本变成你想要的样子。</p></div>
+      <div class="feature"><div class="icon">🏢</div><h3>MCN 团队协作</h3><p>主号创建团队、邀请成员、统一分配与管理额度，企业级集中运营。</p></div>
+      <div class="feature"><div class="icon">🤖</div><h3>AI 大模型灵活接入</h3><p>支持多套大模型服务灵活切换配置，保障生成质量与稳定。</p></div>
+      <div class="feature"><div class="icon">🛡️</div><h3>合规审核</h3><p>内置合规审核等级，自动替换违规词，内容安全有保障。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 版本 -->
+<section id="versions">
+  <div class="container">
+    <div class="section-head"><h2>产品版本</h2><p>个人创作到企业团队，总有一款适合你</p></div>
+    <div class="versions">
+      <div class="version">
+        <h3>📱 个人版</h3>
+        <p class="tagline">面向独立创作者与自媒体从业者</p>
+        <ul>
+          <li>入门创作者版：99 元/月 · 800 次/月（自然月清零）</li>
+          <li>坚持版：29 元/月 · 更灵活的低门槛订阅</li>
+          <li>多平台脚本 / 标题 / 标签一键生成</li>
+          <li>支持二次改写与导出（TXT / SRT 等）</li>
+          <li>手机号验证登录，微信 / 支付宝在线开通</li>
+        </ul>
+      </div>
+      <div class="version mcn">
+        <h3>🏢 MCN 版（团队版）</h3>
+        <p class="tagline">面向 MCN 机构、内容团队与企业用户</p>
+        <ul>
+          <li>专业 MCN 版：199 元/月 · 2500 次/月</li>
+          <li>企业包年版：1690 元/年 · 25000 次/年</li>
+          <li>主账号 + 子账号团队协作，统一额度管理</li>
+          <li>团队用量看板与运营管理后台</li>
+          <li>子账号同一手机号登录即可使用团队额度</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 下载 -->
+<section class="download" id="download">
+  <div class="container">
+    <div class="section-head"><h2>下载与使用</h2><p>Windows · Mac · 安卓 · iOS · 网页版，全平台覆盖</p></div>
+    <div class="dl-cards">
+      <!-- Windows -->
+      <div class="dl-card">
+        <div class="ico">🖥️</div>
+        <h3>Windows 桌面版</h3>
+        <p>下载安装包，双击安装即可使用。个人版与 MCN 版分开下载。</p>
+        <a class="dl-btn" href="downloads/短稿工场个人版安装包.exe">⬇ 下载个人版</a>
+        <a class="dl-btn alt" href="downloads/短稿工场MCN版安装包.exe">⬇ 下载 MCN 版</a>
+      </div>
+      <!-- Mac -->
+      <div class="dl-card">
+        <div class="ico">🍎</div>
+        <h3>Mac 桌面版</h3>
+        <p>支持 macOS，原生桌面体验。Mac 安装包正在准备中。</p>
+        <span class="dl-btn coming">🍎 即将上线</span>
+      </div>
+      <!-- 安卓 PWA -->
+      <div class="dl-card">
+        <div class="ico">🤖</div>
+        <h3>安卓版</h3>
+        <p>无需下载 APK，一键添加到桌面，像 App 一样使用，离线可访问。</p>
+        <button class="dl-btn pwa" onclick="showPwaTip('android')">📱 添加到桌面</button>
+      </div>
+      <!-- iOS PWA -->
+      <div class="dl-card">
+        <div class="ico">🍏</div>
+        <h3>iOS 版</h3>
+        <p>iPhone / iPad 添加到主屏幕，全屏体验，支持离线访问。</p>
+        <button class="dl-btn pwa" onclick="showPwaTip('ios')">📱 添加到主屏幕</button>
+      </div>
+      <!-- 网页版 -->
+      <div class="dl-card">
+        <div class="ico">🌐</div>
+        <h3>网页版（在线）</h3>
+        <p>无需安装，浏览器打开即可使用，数据云端同步，全平台通用。</p>
+        <a class="dl-btn alt" href="web/" target="_blank">🌐 立即使用</a>
+      </div>
+    </div>
+    <p class="dl-note">※ Windows 安装包为 64 位版本，个人版与 MCN 版请分别下载；如系统提示未知发布者，请选择"更多信息 → 仍要运行"。安卓/iOS 通过 PWA 技术添加到桌面，无需应用商店，首次使用需联网。Mac 版与企业签名证书接入中。</p>
+
+    <!-- PWA 添加到桌面引导弹窗 -->
+    <div class="pwa-tip" id="pwaTip" onclick="if(event.target===this)this.classList.remove('show')">
+      <div class="pwa-box">
+        <h4 id="pwaTitle">添加到桌面</h4>
+        <div class="steps" id="pwaSteps"></div>
+        <p id="pwaDesc"></p>
+        <button class="close" onclick="document.getElementById('pwaTip').classList.remove('show')">我知道了</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 公司 -->
+<section class="company" id="company">
+  <div class="container">
+    <div class="section-head"><h2>关于我们</h2><p>南宁和奥电子有限公司</p></div>
+    <div class="company-grid">
+      <div>
+        <h3>公司简介</h3>
+        <p>南宁和奥电子有限公司是一家专业从事工具类应用软件开发与运营的科技公司，长期聚焦于人工智能辅助创作与内容生产效率工具领域，致力于为个人创作者与机构团队提供智能化、合规化的数字内容生产解决方案。</p>
+        <p>公司自主研发的"短稿工场"产品，覆盖个人版与 MCN 版两大版本，已形成从文案生成、批量生产、二次改写到团队协作、运营管理的完整工具链，服务广大内容创作者与内容机构。</p>
+      </div>
+      <div class="info">
+        <div>公司名称：南宁和奥电子有限公司</div>
+        <div>企业邮箱：1097964207@qq.com</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 页脚 -->
+<footer>
+  <div class="container footer-inner">
+    <div>© 2026 南宁和奥电子有限公司 版权所有 · 短稿工场</div>
+    <div>
+      <a href="#intro">应用简介</a> ｜
+      <a href="#download">下载</a> ｜
+      <a href="mailto:1097964207@qq.com">联系邮箱</a> ｜
+      <a href="terms.html">服务条款</a> ｜
+      <a href="privacy.html">隐私政策</a>
+    </div>
+  </div>
+</footer>
+
+
+<script>
+// PWA Service Worker 注册
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('./sw.js').catch(function(){});
+  });
+}
+// 添加到桌面引导
+function showPwaTip(platform) {
+  var tip = document.getElementById('pwaTip');
+  var title = document.getElementById('pwaTitle');
+  var steps = document.getElementById('pwaSteps');
+  var desc = document.getElementById('pwaDesc');
+  if (platform === 'android') {
+    title.textContent = '🤖 安卓添加到桌面';
+    steps.innerHTML = '1. 用 <b>Chrome 浏览器</b>打开本页面<br>2. 点击右上角 <b>⋮ 菜单</b><br>3. 选择 <b>"添加到主屏幕"</b><br>4. 点击"添加"，桌面即出现图标';
+    desc.textContent = '添加后可像普通 App 一样点击图标打开，支持全屏体验和离线访问。';
+  } else {
+    title.textContent = '🍏 iOS 添加到主屏幕';
+    steps.innerHTML = '1. 用 <b>Safari 浏览器</b>打开本页面<br>2. 点击底部 <b>⬆ 分享按钮</b><br>3. 选择 <b>"添加到主屏幕"</b><br>4. 点击右上角"添加"';
+    desc.textContent = '添加后可像普通 App 一样点击图标打开，支持全屏体验。';
+  }
+  tip.classList.add('show');
+}
+</script>
+</body>
+</html>

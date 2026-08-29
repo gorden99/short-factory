@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>短稿工场 · 运营管理后台</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"Microsoft YaHei",-apple-system,"PingFang SC",sans-serif;background:#f0f4f9;color:#1f2937}
+input,select,button,textarea{font-family:inherit}
+.hidden{display:none!important}
+/* 登录 */
+#loginPage{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0f4c81 0%,#1b6ca8 55%,#2a9d8f 100%)}
+.login-box{width:380px;background:#fff;border-radius:16px;padding:36px 32px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.login-box h1{font-size:22px;text-align:center;color:#0f4c81;margin-bottom:4px}
+.login-box .sub{text-align:center;color:#6b7280;font-size:13px;margin-bottom:24px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:13px;color:#4b5563;margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;padding:10px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;outline:none;transition:.2s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#1b6ca8;box-shadow:0 0 0 3px rgba(27,108,168,.15)}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 18px;border:none;border-radius:8px;cursor:pointer;font-size:14px;transition:.2s;font-weight:500}
+.btn-primary{background:#0f4c81;color:#fff}
+.btn-primary:hover{background:#0a3d68}
+.btn-success{background:#2a9d8f;color:#fff}
+.btn-success:hover{background:#21867a}
+.btn-danger{background:#e11d48;color:#fff}
+.btn-danger:hover{background:#be123c}
+.btn-warn{background:#f59e0b;color:#fff}
+.btn-warn:hover{background:#d97706}
+.btn-ghost{background:#fff;color:#374151;border:1px solid #d1d5db}
+.btn-ghost:hover{background:#f3f4f6}
+.btn-sm{padding:5px 10px;font-size:12px;border-radius:6px}
+.btn-block{width:100%}
+/* 布局 */
+#appPage{display:flex;min-height:100vh}
+.sidebar{width:220px;background:#0f2540;color:#cbd5e1;padding:18px 0;flex-shrink:0}
+.sidebar .brand{padding:0 20px 18px;font-size:18px;font-weight:700;color:#fff;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:10px}
+.sidebar .brand small{display:block;font-size:11px;color:#8ea7c0;font-weight:400;margin-top:3px}
+.nav-item{padding:12px 20px;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:14px;transition:.2s;border-left:3px solid transparent}
+.nav-item:hover{background:rgba(255,255,255,.06);color:#fff}
+.nav-item.active{background:rgba(255,255,255,.1);color:#fff;border-left-color:#2a9d8f}
+.main{flex:1;padding:24px 30px;overflow-x:auto}
+.page-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.page-head h2{font-size:20px;color:#0f4c81}
+.page-head .user-chip{font-size:13px;color:#6b7280}
+/* 统计卡片 */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin-bottom:24px}
+.stat-card{background:#fff;border-radius:12px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,.06);border-top:4px solid #1b6ca8}
+.stat-card.mcn{border-top-color:#2a9d8f}
+.stat-card .label{font-size:12px;color:#6b7280;margin-bottom:8px}
+.stat-card .num{font-size:26px;font-weight:700;color:#111827}
+.stat-card .num small{font-size:13px;font-weight:400;color:#6b7280}
+.stat-card .extra{margin-top:8px;font-size:12px;color:#9ca3af;line-height:1.8}
+.section-title{font-size:15px;color:#374151;margin:20px 0 12px;font-weight:600}
+/* 面板 */
+.panel{background:#fff;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.06);padding:18px}
+.tabs{display:flex;gap:8px;margin-bottom:16px}
+.tab{padding:7px 16px;border-radius:20px;border:1px solid #d1d5db;background:#fff;color:#4b5563;cursor:pointer;font-size:13px}
+.tab.active{background:#0f4c81;color:#fff;border-color:#0f4c81}
+.toolbar{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.toolbar input{width:240px;padding:8px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:13px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#f8fafc;color:#475569;text-align:left;padding:10px 12px;border-bottom:2px solid #e5e7eb;font-weight:600;white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+tr:hover td{background:#f8fafc}
+.badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:500}
+.badge.personal{background:#e0f2fe;color:#0369a1}
+.badge.mcn{background:#d1fae5;color:#047857}
+.badge.pro{background:#fef3c7;color:#b45309}
+.badge.enterprise{background:#fde68a;color:#92400e}
+.badge.basic{background:#e0e7ff;color:#4338ca}
+.badge.starter{background:#ede9fe;color:#6d28d9}
+.badge.bonus{background:#fce7f3;color:#be185d}
+.badge.free{background:#f3f4f6;color:#6b7280}
+.badge.active{background:#dcfce7;color:#15803d}
+.badge.disabled{background:#fee2e2;color:#b91c1c}
+.badge.on{background:#d1fae5;color:#047857}
+.badge.off{background:#f3f4f6;color:#6b7280}
+.row-actions{display:flex;gap:6px;flex-wrap:wrap}
+.pager{display:flex;align-items:center;gap:12px;justify-content:flex-end;margin-top:14px;font-size:13px;color:#6b7280}
+.pager button{padding:5px 12px;border:1px solid #d1d5db;background:#fff;border-radius:6px;cursor:pointer;font-size:13px}
+.pager button:hover:not(:disabled){background:#f3f4f6}
+.pager button:disabled{opacity:.4;cursor:not-allowed}
+/* 表单 */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-grid .full{grid-column:1/-1}
+.form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+/* 模态框 */
+.modal-mask{position:fixed;inset:0;background:rgba(15,23,42,.5);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
+.modal{background:#fff;border-radius:14px;width:520px;max-width:100%;max-height:90vh;overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #e5e7eb}
+.modal-head h3{font-size:16px;color:#111827}
+.modal-body{padding:20px}
+.modal-foot{padding:14px 20px;border-top:1px solid #e5e7eb;display:flex;justify-content:flex-end;gap:10px}
+.close-x{cursor:pointer;font-size:20px;color:#9ca3af;border:none;background:none}
+/* toast */
+#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 22px;border-radius:8px;font-size:14px;z-index:200;opacity:0;transition:.3s;pointer-events:none}
+#toast.show{opacity:1}
+#toast.err{background:#be123c}
+.empty{text-align:center;color:#9ca3af;padding:40px 0;font-size:14px}
+.model-list .model-row{display:flex;align-items:center;justify-content:space-between;border:1px solid #e5e7eb;border-radius:10px;padding:14px 16px;margin-bottom:10px}
+.model-row .info{flex:1}
+.model-row .info .name{font-size:15px;font-weight:600;color:#111827}
+.model-row .info .meta{font-size:12px;color:#6b7280;margin-top:4px;word-break:break-all}
+.model-row .ops{display:flex;gap:8px}
+@media(max-width:900px){.sidebar{display:none}.main{padding:16px}.form-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div id="loginPage">
+  <div class="login-box">
+    <h1>短稿工场 · 运营管理后台</h1>
+    <div class="sub">个人版 / MCN 版用户与 AI 模型配置管理</div>
+    <form id="loginForm">
+      <div class="field"><label>管理员账号</label><input id="loginUser" value="admin"></div>
+      <div class="field"><label>密码</label><input id="loginPwd" type="password" value="admin123"></div>
+      <button class="btn btn-primary btn-block" type="submit">登 录</button>
+    </form>
+  </div>
+</div>
+
+<div id="appPage" class="hidden">
+  <aside class="sidebar">
+    <div class="brand">短稿工场 <small>运营管理后台 · Admin</small></div>
+    <div class="nav-item active" data-page="dash">📊 数据看板</div>
+    <div class="nav-item" data-page="users">👥 用户管理</div>
+    <div class="nav-item" data-page="models">🤖 AI 模型</div>
+    <div class="nav-item" data-page="pwd">🔑 修改密码</div>
+    <div class="nav-item" id="logoutBtn">🚪 退出登录</div>
+  </aside>
+
+  <main class="main">
+    <!-- 看板 -->
+    <div id="page-dash">
+      <div class="page-head"><h2>运营数据看板</h2><span class="user-chip" id="dashUser"></span></div>
+      <div class="section-title">📱 个人版</div>
+      <div class="stat-grid" id="personalStats"></div>
+      <div class="section-title">🏢 MCN 版（团队版）</div>
+      <div class="stat-grid" id="mcnStats"></div>
+    </div>
+
+    <!-- 用户管理 -->
+    <div id="page-users" class="hidden">
+      <div class="page-head"><h2>用户管理</h2><span class="user-chip">共 <b id="userTotal">0</b> 人</span></div>
+      <div class="panel">
+        <div class="tabs">
+          <div class="tab active" data-edition="all">全部</div>
+          <div class="tab" data-edition="personal">个人版</div>
+          <div class="tab" data-edition="mcn">MCN 版</div>
+        </div>
+        <div class="toolbar">
+          <input id="kwInput" placeholder="搜索手机号 / 昵称，回车确认">
+          <button class="btn btn-ghost btn-sm" id="kwBtn">搜索</button>
+          <span style="flex:1"></span>
+          <button class="btn btn-primary btn-sm" id="refreshUsers">刷新</button>
+        </div>
+        <table>
+          <thead><tr>
+            <th>ID</th><th>手机号</th><th>昵称</th><th>版本</th><th>套餐</th>
+            <th>剩余额度</th><th>本月/今日</th><th>团队</th><th>状态</th><th>注册时间</th><th>操作</th>
+          </tr></thead>
+          <tbody id="userTbody"><tr><td colspan="11" class="empty">加载中…</td></tr></tbody>
+        </table>
+        <div class="pager">
+          <button id="prevPage">上一页</button>
+          <span id="pageInfo">第 1 页</span>
+          <button id="nextPage">下一页</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI 模型 -->
+    <div id="page-models" class="hidden">
+      <div class="page-head"><h2>AI 大模型配置</h2><span class="user-chip">切换后立即生效，无需重启服务</span></div>
+      <div class="panel">
+        <div class="toolbar">
+          <b style="font-size:14px">已配置模型</b>
+          <span style="flex:1"></span>
+          <button class="btn btn-primary btn-sm" id="addModelBtn">＋ 新增模型</button>
+          <button class="btn btn-ghost btn-sm" id="refreshModels">刷新</button>
+        </div>
+        <div class="model-list" id="modelList"></div>
+      </div>
+    </div>
+
+    <!-- 修改密码 -->
+    <div id="page-pwd" class="hidden">
+      <div class="page-head"><h2>修改管理员密码</h2></div>
+      <div class="panel" style="max-width:440px">
+        <div class="field"><label>当前密码</label><input id="pwdOld" type="password"></div>
+        <div class="field"><label>新密码</label><input id="pwdNew" type="password"></div>
+        <div class="field"><label>确认新密码</label><input id="pwdNew2" type="password"></div>
+        <button class="btn btn-primary" id="pwdBtn">保存新密码</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- 用户操作弹窗 -->
+<div class="modal-mask hidden" id="userModal">
+  <div class="modal">
+    <div class="modal-head"><h3 id="userModalTitle">调整用户</h3><button class="close-x" onclick="closeModal('userModal')">×</button></div>
+    <div class="modal-body">
+      <div class="field"><label>当前套餐</label><input id="umPlanCur" disabled></div>
+      <div class="field"><label>修改套餐</label>
+        <select id="umPlan">
+          <option value="">不修改</option>
+          <option value="basic">个人版 · 入门创作者版</option>
+          <option value="starter">个人版 · 坚持版</option>
+          <option value="pro">MCN 版 · 专业版</option>
+          <option value="enterprise">MCN 版 · 企业包年版</option>
+        </select>
+      </div>
+      <div class="field"><label>套餐有效期（天，默认 30）</label><input id="umDays" type="number" value="30"></div>
+      <div class="field"><label>加赠次数包（0 = 不加）</label><input id="umBonus" type="number" value="0"></div>
+      <div class="field"><label>次数包有效期（天，默认 365）</label><input id="umBonusDays" type="number" value="365"></div>
+      <div class="field"><label>版本标识（影响统计归类）</label>
+        <select id="umEdition"><option value="">自动（按套餐/团队）</option><option value="personal">个人版</option><option value="mcn">MCN 版</option></select>
+      </div>
+      <div class="field"><label>账号状态</label>
+        <select id="umStatus"><option value="">保持不变</option><option value="active">启用</option><option value="disabled">禁用（禁止登录）</option></select>
+      </div>
+      <div class="field"><label><input type="checkbox" id="umResetMonth"> 同时清零本月用量（重置月额度）</label></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('userModal')">取消</button>
+      <button class="btn btn-primary" id="umSave">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 模型弹窗 -->
+<div class="modal-mask hidden" id="modelModal">
+  <div class="modal">
+    <div class="modal-head"><h3 id="modelModalTitle">新增模型</h3><button class="close-x" onclick="closeModal('modelModal')">×</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="field"><label>模型名称 *</label><input id="mmName" placeholder="例如：火山方舟 / DeepSeek-V3 / 通义千问"></div>
+        <div class="field"><label>模式 *</label>
+          <select id="mmMode">
+            <option value="cloud">云端 API（OpenAI 兼容）</option>
+            <option value="triton">本地 Triton（私有化）</option>
+          </select>
+        </div>
+        <div class="field full"><label>API 地址 *</label><input id="mmUrl" placeholder="https://api.example.com/v1/chat/completions"></div>
+        <div class="field"><label>API Key</label><input id="mmKey" placeholder="sk-xxx（云端必填，Triton 可不填）"></div>
+        <div class="field"><label>模型名（model）</label><input id="mmModel" placeholder="如 deepseek-chat / ep-xxx"></div>
+        <div class="field"><label>超时（秒）</label><input id="mmTimeout" type="number" value="120"></div>
+      </div>
+      <div style="margin-top:8px"><button class="btn btn-ghost btn-sm" id="mmTest">🔍 测试连通性</button> <span id="mmTestResult" style="font-size:12px"></span></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('modelModal')">取消</button>
+      <button class="btn btn-primary" id="mmSave">保存</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+var API = '/api/admin';
+var TOKEN = localStorage.getItem('admin_token') || '';
+var curPage = 'dash';
+var editionFilter = 'all';
+var page = 1, pageSize = 20, totalUsers = 0;
+var editUid = null, editMid = null;
+var modelList = [];
+
+function toast(msg, isErr){
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = isErr ? 'show err' : 'show';
+  clearTimeout(t._tm);
+  t._tm = setTimeout(function(){ t.className = ''; }, 2600);
+}
+
+async function api(method, url, body){
+  var opts = {method: method, headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + TOKEN}};
+  if (body !== undefined) opts.body = JSON.stringify(body);
+  var res = await fetch(API + url, opts);
+  var data = null;
+  try { data = await res.json(); } catch(e){}
+  if (res.status === 401){
+    doLogout();
+    throw new Error('登录已过期，请重新登录');
+  }
+  if (!res.ok) throw new Error((data && data.detail) || ('请求失败 ' + res.status));
+  return data;
+}
+
+/* ── 登录 ── */
+document.getElementById('loginForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  var u = document.getElementById('loginUser').value.trim();
+  var p = document.getElementById('loginPwd').value;
+  try {
+    var r = await fetch(API + '/login', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({username:u, password:p})});
+    var d = await r.json();
+    if (!r.ok || !d.ok) throw new Error(d.detail || '登录失败');
+    TOKEN = d.token;
+    localStorage.setItem('admin_token', TOKEN);
+    enterApp(d.nickname || u);
+  } catch(err){ toast(err.message, true); }
+});
+
+function doLogout(){
+  TOKEN = '';
+  localStorage.removeItem('admin_token');
+  document.getElementById('appPage').classList.add('hidden');
+  document.getElementById('loginPage').classList.remove('hidden');
+}
+
+function enterApp(nick){
+  document.getElementById('loginPage').classList.add('hidden');
+  document.getElementById('appPage').classList.remove('hidden');
+  document.getElementById('dashUser').textContent = '管理员：' + nick;
+  switchPage('dash');
+}
+
+document.getElementById('logoutBtn').addEventListener('click', doLogout);
+
+/* ── 导航 ── */
+document.querySelectorAll('.nav-item[data-page]').forEach(function(el){
+  el.addEventListener('click', function(){ switchPage(this.dataset.page); });
+});
+function switchPage(pg){
+  curPage = pg;
+  document.querySelectorAll('.nav-item[data-page]').forEach(function(el){
+    el.classList.toggle('active', el.dataset.page === pg);
+  });
+  ['dash','users','models','pwd'].forEach(function(p){
+    document.getElementById('page-' + p).classList.toggle('hidden', p !== pg);
+  });
+  if (pg === 'dash') loadStats();
+  if (pg === 'users') loadUsers();
+  if (pg === 'models') loadModels();
+}
+
+/* ── 看板 ── */
+async function loadStats(){
+  try {
+    var d = await api('GET', '/stats');
+    renderStats(d.stats.personal, 'personalStats');
+    renderStats(d.stats.mcn, 'mcnStats');
+  } catch(e){ toast(e.message, true); }
+}
+function renderStats(s, id){
+  var el = document.getElementById(id);
+  var planLine = '';
+  if (s.free !== undefined) planLine += '免费 ' + s.free + ' ｜ ';
+  if (s.basic) planLine += '入门 ' + s.basic + ' ｜ ';
+  if (s.starter) planLine += '坚持 ' + s.starter + ' ｜ ';
+  if (s.bonus) planLine += '次数包 ' + s.bonus + ' ｜ ';
+  if (s.pro) planLine += '专业 ' + s.pro + ' ｜ ';
+  if (s.enterprise) planLine += '企业包年 ' + s.enterprise + ' ｜ ';
+  planLine = planLine.replace(/｜ $/, '');
+  var teamLine = (s.team_count !== undefined) ? ('团队 ' + s.team_count + ' ｜ 子账号 ' + s.subaccount_count) : '';
+  el.innerHTML =
+    '<div class="stat-card"><div class="label">注册用户总数</div><div class="num">' + s.total + '<small> 人</small></div></div>' +
+    '<div class="stat-card"><div class="label">套餐分布</div><div class="num" style="font-size:18px;padding-top:4px">' + planLine + '</div></div>' +
+    '<div class="stat-card"><div class="label">本月累计生成</div><div class="num">' + s.month_used + '<small> 次</small></div></div>' +
+    '<div class="stat-card"><div class="label">今日生成</div><div class="num">' + s.today_used + '<small> 次</small></div></div>' +
+    (teamLine ? '<div class="stat-card"><div class="label">团队规模</div><div class="num" style="font-size:16px;padding-top:6px">' + teamLine + '</div></div>' : '');
+}
+
+/* ── 用户管理 ── */
+document.querySelectorAll('#page-users .tab').forEach(function(t){
+  t.addEventListener('click', function(){
+    document.querySelectorAll('#page-users .tab').forEach(function(x){ x.classList.remove('active'); });
+    t.classList.add('active');
+    editionFilter = t.dataset.edition;
+    page = 1;
+    loadUsers();
+  });
+});
+document.getElementById('kwBtn').addEventListener('click', function(){ page = 1; loadUsers(); });
+document.getElementById('kwInput').addEventListener('keydown', function(e){ if (e.key === 'Enter'){ page = 1; loadUsers(); } });
+document.getElementById('refreshUsers').addEventListener('click', function(){ loadUsers(); });
+document.getElementById('prevPage').addEventListener('click', function(){ if (page > 1){ page--; loadUsers(); } });
+document.getElementById('nextPage').addEventListener('click', function(){ if (page * pageSize < totalUsers){ page++; loadUsers(); } });
+
+async function loadUsers(){
+  var kw = document.getElementById('kwInput').value.trim();
+  try {
+    var d = await api('GET', '/users?edition=' + encodeURIComponent(editionFilter) + '&keyword=' + encodeURIComponent(kw) + '&page=' + page + '&size=' + pageSize);
+    totalUsers = d.total;
+    document.getElementById('userTotal').textContent = totalUsers;
+    document.getElementById('pageInfo').textContent = '第 ' + d.page + ' 页 / 共 ' + Math.max(1, Math.ceil(totalUsers / pageSize)) + ' 页';
+    document.getElementById('prevPage').disabled = (page <= 1);
+    document.getElementById('nextPage').disabled = (page * pageSize >= totalUsers);
+    var tb = document.getElementById('userTbody');
+    if (!d.items.length){ tb.innerHTML = '<tr><td colspan="11" class="empty">暂无用户</td></tr>'; return; }
+    userCache = {};
+    d.items.forEach(function(u){ userCache[u.id] = u; });
+    tb.innerHTML = d.items.map(function(u){
+      var planBadge = badgePlan(u.plan || 'free');
+      var ver = u.edition === 'mcn' ? '<span class="badge mcn">MCN 版</span>' : '<span class="badge personal">个人版</span>';
+      var roleTxt = u.role === 'member' ? ('子账号 → ' + (u.team_master || '-')) : (u.parent_id ? '子账号' : (u.edition === 'mcn' ? '团队主号' : '个人'));
+      var stBadge = u.status === 'disabled' ? '<span class="badge disabled">已禁用</span>' : '<span class="badge active">正常</span>';
+      var ops = '<div class="row-actions">' +
+        '<button class="btn btn-ghost btn-sm" onclick="openUserModal(' + u.id + ')">调整</button>' +
+        '<button class="btn btn-sm ' + (u.status === 'disabled' ? 'btn-success' : 'btn-warn') + '" onclick="toggleStatus(' + u.id + ',\'' + (u.status === 'disabled' ? 'active' : 'disabled') + '\')">' + (u.status === 'disabled' ? '启用' : '禁用') + '</button>' +
+        '</div>';
+      return '<tr><td>' + u.id + '</td><td>' + u.phone + '</td><td>' + (u.nickname || '-') + '</td><td>' + ver + '</td><td>' + planBadge + '</td>' +
+        '<td><b>' + u.quota_remain + '</b>' + (u.bonus_remain > 0 ? ' <small style="color:#be185d">+次数包' + u.bonus_remain + '</small>' : '') + '</td>' +
+        '<td>' + u.month_used + ' / ' + u.today_used + '</td><td>' + roleTxt + '</td><td>' + stBadge + '</td>' +
+        '<td>' + (u.created_at || '-') + '</td><td>' + ops + '</td></tr>';
+    }).join('');
+  } catch(e){ toast(e.message, true); }
+}
+function badgePlan(plan){
+  var map = {basic:'入门', starter:'坚持', pro:'专业', enterprise:'企业包年', bonus:'次数包', free:'免费'};
+  if (!map[plan]) return '<span class="badge free">' + plan + '</span>';
+  return '<span class="badge ' + plan + '">' + map[plan] + '</span>';
+}
+
+var userCache = {};
+function openUserModal(uid){
+  editUid = uid;
+  var u = userCache[uid] || {};
+  var planNames = {basic:'入门创作者版', starter:'坚持版', pro:'专业版', enterprise:'企业包年版', bonus:'次数包'};
+  var planTxt = planNames[u.plan] ? (u.plan + '（' + planNames[u.plan] + '）') : (u.plan || '免费');
+  if (u.is_vip) planTxt += ' · 会员';
+  document.getElementById('umPlanCur').value = planTxt;
+  ['umPlan','umDays','umBonus','umBonusDays','umEdition','umStatus'].forEach(function(id){
+    var el = document.getElementById(id); if (el.tagName === 'SELECT') el.value = ''; else el.value = (id === 'umDays' ? 30 : (id === 'umBonusDays' ? 365 : 0));
+  });
+  document.getElementById('umResetMonth').checked = false;
+  document.getElementById('userModal').classList.remove('hidden');
+}
+document.getElementById('umSave').addEventListener('click', async function(){
+  if (!editUid) return;
+  var body = {
+    plan: document.getElementById('umPlan').value,
+    expire_days: parseInt(document.getElementById('umDays').value) || 30,
+    add_bonus: parseInt(document.getElementById('umBonus').value) || 0,
+    bonus_days: parseInt(document.getElementById('umBonusDays').value) || 365,
+    edition: document.getElementById('umEdition').value,
+    status: document.getElementById('umStatus').value,
+    reset_month: document.getElementById('umResetMonth').checked
+  };
+  try {
+    await api('PUT', '/users/' + editUid, body);
+    toast('已更新用户');
+    closeModal('userModal');
+    loadUsers(); loadStats();
+  } catch(e){ toast(e.message, true); }
+});
+async function toggleStatus(uid, st){
+  try {
+    await api('PUT', '/users/' + uid, {status: st});
+    toast(st === 'disabled' ? '已禁用该账号' : '已启用该账号');
+    loadUsers(); loadStats();
+  } catch(e){ toast(e.message, true); }
+}
+
+/* ── AI 模型 ── */
+document.getElementById('addModelBtn').addEventListener('click', function(){
+  editMid = null;
+  document.getElementById('modelModalTitle').textContent = '新增模型';
+  ['mmName','mmUrl','mmKey','mmModel'].forEach(function(id){ document.getElementById(id).value = ''; });
+  document.getElementById('mmMode').value = 'cloud';
+  document.getElementById('mmTimeout').value = 120;
+  document.getElementById('mmTestResult').textContent = '';
+  document.getElementById('modelModal').classList.remove('hidden');
+});
+document.getElementById('refreshModels').addEventListener('click', loadModels);
+
+async function loadModels(){
+  try {
+    var d = await api('GET', '/models');
+    modelList = d.models;
+    var el = document.getElementById('modelList');
+    if (!d.models.length){ el.innerHTML = '<div class="empty">还没有模型配置，点击右上角“新增模型”添加</div>'; return; }
+    el.innerHTML = d.models.map(function(m){
+      var modeTxt = m.mode === 'triton' ? '本地 Triton' : '云端 API';
+      var onTxt = m.activated ? '<span class="badge on">★ 当前生效</span>' : '<span class="badge off">未启用</span>';
+      return '<div class="model-row">' +
+        '<div class="info"><div class="name">' + esc(m.name) + ' ' + onTxt + '</div>' +
+        '<div class="meta">模式：' + modeTxt + ' ｜ API：' + esc(m.api_url) + ' ｜ 模型：' + esc(m.model || '-') + ' ｜ 超时：' + m.timeout + 's ｜ Key：' + esc(m.api_key_masked || '未设置') + '</div></div>' +
+        '<div class="ops">' +
+        (m.activated ? '' : '<button class="btn btn-success btn-sm" onclick="activateModel(' + m.id + ')">启用</button>') +
+        '<button class="btn btn-ghost btn-sm" onclick="openModelModal(' + m.id + ')">编辑</button>' +
+        '<button class="btn btn-danger btn-sm" onclick="delModel(' + m.id + ')">删除</button>' +
+        '</div></div>';
+    }).join('');
+  } catch(e){ toast(e.message, true); }
+}
+function openModelModal(mid){
+  editMid = mid;
+  var m = modelList.find(function(x){ return x.id === mid; });
+  if (!m) return;
+  document.getElementById('modelModalTitle').textContent = '编辑模型：' + m.name;
+  document.getElementById('mmName').value = m.name;
+  document.getElementById('mmMode').value = m.mode;
+  document.getElementById('mmUrl').value = m.api_url;
+  document.getElementById('mmKey').value = '';
+  document.getElementById('mmKey').placeholder = '留空则保持不变';
+  document.getElementById('mmModel').value = m.model;
+  document.getElementById('mmTimeout').value = m.timeout;
+  document.getElementById('mmTestResult').textContent = '';
+  document.getElementById('modelModal').classList.remove('hidden');
+}
+document.getElementById('mmSave').addEventListener('click', async function(){
+  var name = document.getElementById('mmName').value.trim();
+  var mode = document.getElementById('mmMode').value;
+  var url = document.getElementById('mmUrl').value.trim();
+  var key = document.getElementById('mmKey').value.trim();
+  var model = document.getElementById('mmModel').value.trim();
+  var timeout = parseInt(document.getElementById('mmTimeout').value) || 120;
+  if (!name || !url){ toast('请填写名称和 API 地址', true); return; }
+  try {
+    if (editMid) await api('PUT', '/models/' + editMid, {name:name, mode:mode, api_url:url, api_key:key, model:model, timeout:timeout});
+    else await api('POST', '/models', {name:name, mode:mode, api_url:url, api_key:key, model:model, timeout:timeout});
+    toast('模型已保存');
+    closeModal('modelModal');
+    loadModels();
+  } catch(e){ toast(e.message, true); }
+});
+document.getElementById('mmTest').addEventListener('click', async function(){
+  var mode = document.getElementById('mmMode').value;
+  var url = document.getElementById('mmUrl').value.trim();
+  var key = document.getElementById('mmKey').value.trim();
+  var model = document.getElementById('mmModel').value.trim();
+  var timeout = parseInt(document.getElementById('mmTimeout').value) || 30;
+  var r = document.getElementById('mmTestResult');
+  if (!url){ toast('请先填 API 地址', true); return; }
+  r.textContent = '测试中…';
+  try {
+    var d = await api('POST', '/models/test', {mode:mode, api_url:url, api_key:key, model:model, timeout:timeout});
+    r.innerHTML = d.ok ? '<span style="color:#15803d">✔ 连通成功（HTTP ' + d.status + '）</span>' : '<span style="color:#b91c1c">✘ 连通失败（HTTP ' + (d.status||'-') + '）' + esc((d.msg||'').slice(0,80)) + '</span>';
+  } catch(e){ r.textContent = '测试异常：' + e.message; }
+});
+async function activateModel(mid){
+  try {
+    await api('POST', '/models/' + mid + '/activate');
+    toast('已切换为新模型，立即生效');
+    loadModels();
+  } catch(e){ toast(e.message, true); }
+}
+async function delModel(mid){
+  if (!confirm('确定删除该模型配置？')) return;
+  try {
+    await api('DELETE', '/models/' + mid);
+    toast('已删除');
+    loadModels();
+  } catch(e){ toast(e.message, true); }
+}
+
+/* ── 修改密码 ── */
+document.getElementById('pwdBtn').addEventListener('click', async function(){
+  var oldp = document.getElementById('pwdOld').value;
+  var n1 = document.getElementById('pwdNew').value;
+  var n2 = document.getElementById('pwdNew2').value;
+  if (!oldp || !n1){ toast('请填写完整', true); return; }
+  if (n1 !== n2){ toast('两次新密码不一致', true); return; }
+  if (n1.length < 6){ toast('新密码至少 6 位', true); return; }
+  try {
+    await api('POST', '/password', {username: localStorage.getItem('admin_user') || 'admin', old_pwd: oldp, new_pwd: n1});
+    toast('密码已修改');
+    document.getElementById('pwdOld').value = '';
+    document.getElementById('pwdNew').value = '';
+    document.getElementById('pwdNew2').value = '';
+  } catch(e){ toast(e.message, true); }
+});
+
+/* ── 工具 ── */
+function closeModal(id){ document.getElementById(id).classList.add('hidden'); }
+function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+/* 启动 */
+(function(){
+  if (TOKEN){
+    api('GET', '/stats').then(function(){ enterApp(localStorage.getItem('admin_user') || 'admin'); })
+      .catch(function(){ /* token 失效由 api 内部处理登出 */ });
+  }
+})();
+</script>
+</body>
+</html>
