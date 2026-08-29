@@ -62,21 +62,8 @@
       "artifactName": "短稿工场-Mac-${arch}.${ext}"
     },
     "dmg": {
-      "title": "短稿工场",
-      "icon": "build/icon.icns",
-      "contents": [
-        {
-          "x": 130,
-          "y": 220,
-          "type": "file"
-        },
-        {
-          "x": 410,
-          "y": 220,
-          "type": "link",
-          "path": "/Applications"
-        }
-      ]
+      "title": "ShortFactory-MCN",
+      "icon": "build/icon.icns"
     }
   }
 }

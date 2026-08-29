@@ -62,21 +62,8 @@
       "artifactName": "短稿工场个人版-Mac-${arch}.${ext}"
     },
     "dmg": {
-      "title": "短稿工场个人版",
-      "icon": "build/icon.icns",
-      "contents": [
-        {
-          "x": 130,
-          "y": 220,
-          "type": "file"
-        },
-        {
-          "x": 410,
-          "y": 220,
-          "type": "link",
-          "path": "/Applications"
-        }
-      ]
+      "title": "ShortFactory-Personal",
+      "icon": "build/icon.icns"
     }
   }
 }
