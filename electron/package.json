@@ -13,7 +13,8 @@
   },
   "devDependencies": {
     "electron": "^33.2.0",
-    "electron-builder": "^25.1.8"
+    "electron-builder": "^25.1.8",
+    "dmg-license": "^1.0.11"
   },
   "build": {
     "appId": "com.hao.shortfactory",
